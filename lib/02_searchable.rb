@@ -3,19 +3,30 @@ require_relative '01_sql_object'
 
 module Searchable
   def where(params)
-    values = params.values
-    where_clause = params.keys.map do |key|
-      key.to_s + " = ?"
-    end.join(" AND ")
+    if params.is_a?(String)
+      results = DBConnection.execute(<<-SQL)
+        SELECT
+          *
+        FROM
+          #{table_name}
+        WHERE
+          #{params}
+      SQL
+    else
+      values = params.values
+      where_clause = params.keys.map do |key|
+        key.to_s + " = ?"
+      end.join(" AND ")
 
-    results = DBConnection.execute(<<-SQL, *values)
-      SELECT
-        *
-      FROM
-        #{table_name}
-      WHERE
-        #{where_clause}
-    SQL
+      results = DBConnection.execute(<<-SQL, *values)
+        SELECT
+          *
+        FROM
+          #{table_name}
+        WHERE
+          #{where_clause}
+      SQL
+    end
 
     parse_all(results)
   end

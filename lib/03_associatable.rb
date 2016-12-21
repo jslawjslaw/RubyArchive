@@ -1,7 +1,6 @@
 require_relative '02_searchable'
 require 'active_support/inflector'
 
-# Phase IIIa
 class AssocOptions
   attr_accessor(
     :foreign_key,
@@ -55,7 +54,6 @@ class HasManyOptions < AssocOptions
 end
 
 module Associatable
-  # Phase IIIb
   def belongs_to(name, options = {})
     self.assoc_options[name] = BelongsToOptions.new(name, options)
 
@@ -68,11 +66,7 @@ module Associatable
       if results.empty?
         nil
       else
-        # .first is called so that the test specs can check if the
-        # return values are instances of predefined classes. In
-        # practice it should not be called since there usually are many
-        # results returned from associations
-        results.first
+        results
       end
     end
   end
